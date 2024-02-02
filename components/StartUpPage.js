@@ -2,16 +2,6 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 const StartUpPage = ({ navigation }) => {
-  useEffect(() => {
-    // Navigate to MenuPage after 2000 milliseconds (2 seconds)
-    const timeout = setTimeout(() => {
-      navigation.navigate('MenuPage');
-    }, 2000);
-
-    // Clear the timeout on component unmount
-    return () => clearTimeout(timeout);
-  }, [navigation]);
-
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Tangible Bot</Text>
@@ -23,7 +13,7 @@ const StartUpPage = ({ navigation }) => {
         style={styles.button}
         onPress={() => navigation.navigate('MenuPage')}
       >
-        <Text style={styles.buttonText}>Start Coding</Text>
+        <Text style={styles.buttonText}>Tap to Code</Text>
       </TouchableOpacity>
     </View>
   );
