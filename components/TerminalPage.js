@@ -1,4 +1,4 @@
-  import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
   import {
     View,
     Text,
@@ -16,6 +16,7 @@
     const [rfidInputs, setRfidInputs] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
+    const [startEndProgramModalVisible, setStartEndProgramModalVisible] = useState(false);
 
     const textInputRef = useRef(null);
 
@@ -105,6 +106,20 @@
     const handlePlayPress = async () => {
       console.log('Play button pressed');
       console.log('RFID Inputs:', rfidInputs);
+  
+      // Check if the start program RFID value is at the first index
+      if (rfidInputs.length === 0 || rfidInputs[0] !== '0619291971') {
+        // Display modal with alert
+        setStartEndProgramModalVisible(true);
+        return;
+      }
+  
+      // Check if the end program RFID value is at the last index
+      if (rfidInputs.length === 0 || rfidInputs[rfidInputs.length - 1] !== '0296718371') {
+        // Display modal with alert
+        setStartEndProgramModalVisible(true);
+        return;
+      }
     
       // Mapping of RFID values to characters
       const rfidMapping = {
@@ -167,111 +182,136 @@
       }
     };
 
-    return (
-      <View style={styles.newPageContainer} keyboardShouldPersistTaps="never">
-        <Text style={styles.newPageText}>Terminal</Text>
-        <View style={{ opacity: rfidInputs.length ? 0 : 0 }}>
-          <TextInput
-            style={styles.input}
-            placeholder="RFID ID Number"
-            onChangeText={handleInputChange}
-            value={textInputValue}
-            ref={textInputRef}
-            autoFocus={false}
-            showSoftInputOnFocus={false}
-          />
-        </View>
-        <ScrollView style={styles.whiteBox}>
-          {rfidInputs.map((input, index) => (
-            <View key={index} style={{ alignItems: determineAlignment(input) }}>
-              <Image
-                source={numberTextMapping[input].image}
-                style={styles.instructionImage}
-              />
-            </View>
-          ))}
-        </ScrollView>
-        <View style={styles.imageContainer}>
-          <TouchableOpacity onPress={handleVerifyPress}>
-            <Image
-              source={require('../assets/buttons/verify.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleClearPress}>
-            <Image
-              source={require('../assets/buttons/clear.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleStopPress}>
-            <Image
-              source={require('../assets/buttons/stop.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handlePlayPress}>
-            <Image
-              source={require('../assets/buttons/play.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-        </View>
+    // New Modal for Start and End Program Alert
+  const closeStartEndProgramModal = () => {
+    setStartEndProgramModalVisible(false);
+  };
 
-        {/* Main Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={closeModal}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Program Input</Text>
-              <ScrollView>
-                {rfidInputs.map((input, index) => (
-                  <View key={index} style={styles.modalItem}>
-                    <Text style={styles.modalItemText}>
-                      {numberTextMapping[input].text}
-                    </Text>
-                  </View>
-                ))}
-              </ScrollView>
-              <TouchableOpacity onPress={closeModal} style={styles.modalButtonBox}>
-                <Text style={styles.modalCloseButton}>Close</Text>
+  return (
+    <View style={styles.newPageContainer} keyboardShouldPersistTaps="never">
+      <Text style={styles.newPageText}>Terminal</Text>
+      <View style={{ opacity: rfidInputs.length ? 0 : 0 }}>
+        <TextInput
+          style={styles.input}
+          placeholder="RFID ID Number"
+          onChangeText={handleInputChange}
+          value={textInputValue}
+          ref={textInputRef}
+          autoFocus={false}
+          showSoftInputOnFocus={false}
+        />
+      </View>
+      <ScrollView style={styles.whiteBox}>
+        {rfidInputs.map((input, index) => (
+          <View key={index} style={{ alignItems: determineAlignment(input) }}>
+            <Image
+              source={numberTextMapping[input].image}
+              style={styles.instructionImage}
+            />
+          </View>
+        ))}
+      </ScrollView>
+      <View style={styles.imageContainer}>
+        <TouchableOpacity onPress={handleVerifyPress}>
+          <Image
+            source={require('../assets/buttons/verify.png')}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleClearPress}>
+          <Image
+            source={require('../assets/buttons/clear.png')}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleStopPress}>
+          <Image
+            source={require('../assets/buttons/stop.png')}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handlePlayPress}>
+          <Image
+            source={require('../assets/buttons/play.png')}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+      </View>
+  
+      {/* Main Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Program Input</Text>
+            <ScrollView>
+              {rfidInputs.map((input, index) => (
+                <View key={index} style={styles.modalItem}>
+                  <Text style={styles.modalItemText}>
+                    {numberTextMapping[input].text}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+            <TouchableOpacity onPress={closeModal} style={styles.modalButtonBox}>
+              <Text style={styles.modalCloseButton}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+  
+      {/* Start and End Program Alert Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={startEndProgramModalVisible}
+        onRequestClose={closeStartEndProgramModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Alert</Text>
+            <Text style={styles.modalItemText}>
+              Program should start with '0619291971' and end with '0296718371'.
+            </Text>
+            <TouchableOpacity onPress={closeStartEndProgramModal} style={styles.modalButtonBox}>
+              <Text style={styles.modalCloseButton}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+  
+      {/* Confirmation Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={confirmationModalVisible}
+        onRequestClose={() => setConfirmationModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Confirmation</Text>
+            <Text style={styles.modalItemText}>
+              Are you sure you want to clear RFID inputs?
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity onPress={handleConfirmClear}>
+                <Text style={styles.modalButton}>Confirm</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setConfirmationModalVisible(false)}
+              >
+                <Text style={[styles.modalButton, styles.cancelButton]}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
-
-        {/* Confirmation Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={confirmationModalVisible}
-          onRequestClose={() => setConfirmationModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Confirmation</Text>
-              <Text style={styles.modalItemText}>
-                Are you sure you want to clear RFID inputs?
-              </Text>
-              <View style={styles.modalButtons}>
-                <TouchableOpacity onPress={handleConfirmClear}>
-                  <Text style={styles.modalButton}>Confirm</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setConfirmationModalVisible(false)}
-                >
-                  <Text style={[styles.modalButton, styles.cancelButton]}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-      </View>
-    );
+        </View>
+      </Modal>
+    </View>
+  );
   };
 
   const styles = StyleSheet.create({
