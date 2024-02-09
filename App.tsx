@@ -7,6 +7,7 @@ import HowToUsePage from './components/HowToUsePage';
 import BluetoothPage from './components/BluetoothPage';
 import MenuPage from './components/MenuPage';
 import AboutPage from './components/AboutPage';
+import LearningPage from './components/LearningPage';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,11 @@ const App = () => {
         <Stack.Screen
           name="MenuPage"
           component={MenuPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="LearningPage"
+          component={LearningPage}
           options={{ headerShown: false }}
         />
         <Stack.Screen
