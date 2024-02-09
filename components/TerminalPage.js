@@ -24,6 +24,7 @@
       const [selectedImageToRemove, setSelectedImageToRemove] = useState(null);
       const [clearConfirmationModalVisible, setClearConfirmationModalVisible] = useState(false);
       const lastClickTimeRef = useRef(null);
+      const [clickedImageIndex, setClickedImageIndex] = useState(null)
 
 
       
@@ -240,19 +241,59 @@
     };
 
     const handleMoveUp = () => {
-      // Add your logic for the top-right button press
-      console.log('Up button pressed');
-      // ...
+      // Add your logic for the "Move Up" button press
+  
+      if (clickedImageIndex === null || clickedImageIndex <= 0) {
+        // If no image is clicked or the clicked image is already at the top, no need to move up
+        return;
+      }
+  
+      const selectedIndex = clickedImageIndex; // Use the stored index of the clicked image
+  
+      // Swap the selected RFID input with the one before it
+      const updatedRfidInputs = [...rfidInputs];
+      [updatedRfidInputs[selectedIndex], updatedRfidInputs[selectedIndex - 1]] = [
+        updatedRfidInputs[selectedIndex - 1],
+        updatedRfidInputs[selectedIndex],
+      ];
+  
+      setRfidInputs(updatedRfidInputs);
+  
+      // Reset the clicked image index after moving up
+      setClickedImageIndex(null);
     };
 
     const handleMoveDown = () => {
-      // Add your logic for the top-right button press
-      console.log('Down button pressed');
-      // ...
+      // Add your logic for the "Move Down" button press
+  
+      if (clickedImageIndex === null || clickedImageIndex >= rfidInputs.length - 1) {
+        // If no image is clicked or the clicked image is already at the bottom, no need to move down
+        return;
+      }
+  
+      const selectedIndex = clickedImageIndex; // Use the stored index of the clicked image
+  
+      // Swap the selected RFID input with the one after it
+      const updatedRfidInputs = [...rfidInputs];
+      [updatedRfidInputs[selectedIndex], updatedRfidInputs[selectedIndex + 1]] = [
+        updatedRfidInputs[selectedIndex + 1],
+        updatedRfidInputs[selectedIndex],
+      ];
+  
+      setRfidInputs(updatedRfidInputs);
+  
+      // Reset the clicked image index after moving down
+      setClickedImageIndex(null);
     };
 
     const handleImageClick = (index) => {
+      // Store the index of the clicked image
+      setClickedImageIndex(index);
+
       const clickedInput = rfidInputs[index];
+  
+      // Print a message to the console when an image is clicked
+      console.log(`Image clicked: RFID Input - ${clickedInput}`);
   
       // Get the current timestamp
       const currentTime = new Date().getTime();
