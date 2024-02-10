@@ -25,6 +25,10 @@
       const [clearConfirmationModalVisible, setClearConfirmationModalVisible] = useState(false);
       const lastClickTimeRef = useRef(null);
       const [clickedImageIndex, setClickedImageIndex] = useState(null)
+      // Add these lines at the beginning of the component, after importing necessary modules and declaring other states
+      const [errorModalVisible, setErrorModalVisible] = useState(false);
+      const [errorMessage, setErrorMessage] = useState('');
+
 
 
       
@@ -148,48 +152,54 @@
           '0618750739': 'F',
           '0435629539': 'B',
         };
+
+         // Mapping of RFID values to corresponding seconds
+        const parameterMapping = {
+          '0619293587': 1,
+          '0437147523': 2,
+          '0622660643': 3,
+          '0293694387': 4,
+          '3996473363': 5,
+        };
       
-        // Iterate over RFID inputs
-        let delay = 0;
-        for (const rfidInput of rfidInputs) {
-          // Check if the RFID input is in the mapping
-          if (rfidMapping.hasOwnProperty(rfidInput)) {
-            const characterToWrite = rfidMapping[rfidInput];
-      
-            // Set a fixed delay for 'Turn Right' and 'Turn Left' commands
-            if (characterToWrite === 'R' || characterToWrite === 'L') {
-              delay = 600; //  for turn commands
-            } else {
-              // Find the parameter value for core movements
-              const parameterIndex = rfidInputs.indexOf(rfidInput) + 1;
-              if (parameterIndex < rfidInputs.length && typeof rfidInputs[parameterIndex] === 'number') {
-                // Calculate the delay based on the parameter value (assuming each unit is 1 second)
-                delay = rfidInputs[parameterIndex] * 1000;
-              } else {
-                delay = 2000; // Default delay if no parameter is provided
-              }
-            }
-      
-            // Write character to BluetoothSerial
-            try {
-              await BluetoothSerial.write(characterToWrite);
-              console.log('Write success:', characterToWrite);
-            } catch (err) {
-              console.log('Write error:', err);
-            }
-      
-            // Delay for the specified duration
-            await new Promise(resolve => setTimeout(resolve, delay));
-      
+         // Iterate over RFID inputs
+    for (let i = 1; i < rfidInputs.length - 1; i++) {
+      const rfidInput = rfidInputs[i];
+
+      // Check if the RFID input is in the mapping
+      if (rfidMapping.hasOwnProperty(rfidInput)) {
+        const characterToWrite = rfidMapping[rfidInput];
+
+        // Check if the next input is a parameter
+        const nextInput = rfidInputs[i + 1];
+        if (nextInput && parameterMapping.hasOwnProperty(nextInput)) {
+          const parameter = parameterMapping[nextInput];
+
+          // Write character to BluetoothSerial
+          try {
+            await BluetoothSerial.write(characterToWrite);
+            console.log('Write success:', characterToWrite);
+
+            // Delay for the specified seconds
+            await new Promise(resolve => setTimeout(resolve, parameter * 1000));
+
             // After the delay, send the character 'S'
             await BluetoothSerial.write('S');
             console.log('Write success: S');
-      
-            // Reset delay for the next iteration
-            delay = 0;
+          } catch (err) {
+            console.log('Write error:', err);
           }
+
+          // Skip the next iteration as the parameter has been processed
+          i++;
+        } else {
+          // With this code to display the error modal
+          setErrorMessage(`Parameter is not attached for movement instruction: ${characterToWrite}`);
+          setErrorModalVisible(true);
         }
-      };
+      }
+    }
+  };
 
       const handleVerifyPress = () => {
         console.log('Verify button pressed');
@@ -500,6 +510,23 @@
   </View>
 </Modal>
 
+<Modal
+  animationType="slide"
+  transparent={true}
+  visible={errorModalVisible}
+  onRequestClose={() => setErrorModalVisible(false)}
+>
+  <View style={styles.modalContainer}>
+    <View style={styles.modalContent}>
+      <Text style={styles.modalTitle}>Error</Text>
+      <Text style={styles.modalItemText}>{errorMessage}</Text>
+      <TouchableOpacity onPress={() => setErrorModalVisible(false)} style={styles.modalButtonBox}>
+        <Text style={styles.modalCloseButton}>Close</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+</Modal>
+
     </View>
   );
     };
@@ -534,6 +561,7 @@
         backgroundColor: '#fff',
         marginBottom: 30,
         paddingTop: 30,
+        paddingBottom: 100,
         borderWidth: 1,
       },
       // Add a new style for the container of all buttons

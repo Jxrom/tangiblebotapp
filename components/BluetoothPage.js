@@ -67,7 +67,7 @@ export default class BluetoothPage extends Component {
           ToastAndroid.SHORT
         );
         // Navigate to MenuPage
-        this.props.navigation.navigate('MenuPage');
+        this.props.navigation.navigate('StartUpPage');
       })
       .catch((err) => console.log(err.message));
   }
