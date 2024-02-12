@@ -29,9 +29,6 @@
       const [errorModalVisible, setErrorModalVisible] = useState(false);
       const [errorMessage, setErrorMessage] = useState('');
 
-
-
-      
       const textInputRef = useRef(null);
 
       const numberTextMapping = {
@@ -89,6 +86,60 @@
         '3996473363': { text: 'Five', image: require('../assets/instructions/5.png') },
       };
 
+      // Define the mapping function
+      const mapRFIDInputs = (rfidInputs) => {
+        const rfidTagCodeMapping = {
+          '0619291971': 'START_PROGRAM',
+          '0296718371': 'END_PROGRAM',
+          '0619600947': 'LOOP',
+          '0617766627': 'END_LOOP',
+          '0619220099': 'IF',
+          '0623298067': 'ELSE',
+          '0619318179': 'END_IF',
+          '0618750739': 'FORWARD',
+          '0435629539': 'BACKWARD',
+          '0624878627': 'TURN_RIGHT',
+          '0435422851': 'TURN_LEFT',
+          '0619293587': 'ONE',
+          '0437147523': 'TWO',
+          '0622660643': 'THREE',
+          '0293694387': 'FOUR',
+          '3996473363': 'FIVE',
+          // Add more mappings as needed
+        };
+
+        // Map RFID inputs
+        const mappedInputs = rfidInputs.map((rfidInput) => {
+          const mappedAction = rfidTagCodeMapping[rfidInput];
+          return mappedAction || 'Unknown';
+        });
+
+        return mappedInputs;
+      };
+
+      const MovementToSerialMapping = {
+        'FORWARD': 'F',
+        'BACKWARD': 'B',
+        'TURN_RIGHT': 'R',
+        'TURN_LEFT': 'L',
+      };
+      
+      const NumberToDelayMapping = {
+        'ONE': 1,
+        'TWO': 2,
+        'THREE': 3,
+        'FOUR': 4,
+        'FIVE': 5,
+      };
+
+      const codeNumberToLoopParameterMapping = {
+        'ONE': 1,
+        'TWO': 2,
+        'THREE': 3,
+        'FOUR': 4,
+        'FIVE': 5,
+      };
+
       const handleInputChange = (text) => {
         setTextInputValue(text);
 
@@ -128,79 +179,87 @@
       };
 
       const handlePlayPress = async () => {
-        console.log('Play button pressed');
-        console.log('RFID Inputs:', rfidInputs);
+        // Map RFID inputs
+        const mappedRFIDtoCode = mapRFIDInputs(rfidInputs);
+      
+        // Log the mapped inputs
+        console.log('List of Code Instructions:', mappedRFIDtoCode);
       
         // Check if the start program RFID value is at the first index
-        if (rfidInputs.length === 0 || rfidInputs[0] !== '0619291971') {
+        if (mappedRFIDtoCode.length === 0 || mappedRFIDtoCode[0] !== 'START_PROGRAM') {
           // Display modal with alert
           setStartEndProgramModalVisible(true);
           return;
         }
       
         // Check if the end program RFID value is at the last index
-        if (rfidInputs.length === 0 || rfidInputs[rfidInputs.length - 1] !== '0296718371') {
+        if (mappedRFIDtoCode.length === 0 || mappedRFIDtoCode[mappedRFIDtoCode.length - 1] !== 'END_PROGRAM') {
           // Display modal with alert
           setStartEndProgramModalVisible(true);
           return;
         }
       
-        // Mapping of RFID values to characters
-        const rfidMapping = {
-          '0624878627': 'R',
-          '0435422851': 'L',
-          '0618750739': 'F',
-          '0435629539': 'B',
-        };
-
-         // Mapping of RFID values to corresponding seconds
-        const parameterMapping = {
-          '0619293587': 1,
-          '0437147523': 2,
-          '0622660643': 3,
-          '0293694387': 4,
-          '3996473363': 5,
-        };
+        // Create a mapping of robot movement instruction and robot delay parameters
+        const robotInstructions = {};
+        let currentMovementInstruction = null;
+        let currentDelayParameter = null;
       
-         // Iterate over RFID inputs
-    for (let i = 1; i < rfidInputs.length - 1; i++) {
-      const rfidInput = rfidInputs[i];
-
-      // Check if the RFID input is in the mapping
-      if (rfidMapping.hasOwnProperty(rfidInput)) {
-        const characterToWrite = rfidMapping[rfidInput];
-
-        // Check if the next input is a parameter
-        const nextInput = rfidInputs[i + 1];
-        if (nextInput && parameterMapping.hasOwnProperty(nextInput)) {
-          const parameter = parameterMapping[nextInput];
-
-          // Write character to BluetoothSerial
-          try {
-            await BluetoothSerial.write(characterToWrite);
-            console.log('Write success:', characterToWrite);
-
-            // Delay for the specified seconds
-            await new Promise(resolve => setTimeout(resolve, parameter * 1000));
-
-            // After the delay, send the character 'S'
-            await BluetoothSerial.write('S');
-            console.log('Write success: S');
-          } catch (err) {
-            console.log('Write error:', err);
+        let loopParameter = 1; // Default loop parameter
+      
+        mappedRFIDtoCode.forEach((code, index) => {
+          if (code === 'LOOP' && index + 1 < mappedRFIDtoCode.length) {
+            // If "LOOP" is found and there is a number after it
+            const loopCountCode = mappedRFIDtoCode[index + 1];
+            if (loopCountCode in NumberToDelayMapping) {
+              loopParameter = NumberToDelayMapping[loopCountCode];
+              console.log('Loop Count:', loopParameter);
+            }
+          } else if (code in MovementToSerialMapping) {
+            currentMovementInstruction = MovementToSerialMapping[code];
+            currentDelayParameter = null; // Reset delay parameter when a movement instruction is found
+          } else if (code in NumberToDelayMapping) {
+            currentDelayParameter = NumberToDelayMapping[code];
           }
-
-          // Skip the next iteration as the parameter has been processed
-          i++;
-        } else {
-          // With this code to display the error modal
-          setErrorMessage(`Parameter is not attached for movement instruction: ${characterToWrite}`);
-          setErrorModalVisible(true);
+      
+          // Add the current instruction and delay parameter to the mapping
+          if (currentMovementInstruction !== null) {
+            robotInstructions[currentMovementInstruction] = currentDelayParameter || null;
+          }
+        });
+      
+        // Log the created mapping
+        console.log('Robot Instructions Mapping:', robotInstructions);
+      
+        // Iterate through robotInstructions and send commands to BluetoothSerial
+        try {
+          for (let k = 0; k < loopParameter; k++) {
+            for (const [instruction, delay] of Object.entries(robotInstructions)) {
+              // Write character to BluetoothSerial
+              await BluetoothSerial.write(instruction);
+              console.log('Write success:', instruction);
+      
+              // Introduce a delay if needed between characters
+              if (delay) {
+                await new Promise(resolve => setTimeout(resolve, delay * 1000)); // Delay in seconds
+              }
+      
+              // After the delay, send the character 'S'
+              await BluetoothSerial.write('S');
+            }
+          }
+        } catch (err) {
+          console.log('Write error:', err);
         }
-      }
-    }
-  };
-
+      };
+      
+      
+      
+      
+      
+      
+    
+      
+      
       const handleVerifyPress = () => {
         console.log('Verify button pressed');
         console.log('RFID Inputs:', rfidInputs);
