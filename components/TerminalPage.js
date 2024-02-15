@@ -105,7 +105,6 @@
           '0622660643': 'THREE',
           '0293694387': 'FOUR',
           '3996473363': 'FIVE',
-          // Add more mappings as needed
         };
 
         // Map RFID inputs
@@ -125,14 +124,6 @@
       };
       
       const NumberToDelayMapping = {
-        'ONE': 1,
-        'TWO': 2,
-        'THREE': 3,
-        'FOUR': 4,
-        'FIVE': 5,
-      };
-
-      const codeNumberToLoopParameterMapping = {
         'ONE': 1,
         'TWO': 2,
         'THREE': 3,
@@ -161,9 +152,15 @@
 
       useEffect(() => {
         const focusInterval = setInterval(() => {
-          textInputRef.current.focus();
+          try {
+            // Attempt to focus on the text input
+            textInputRef.current.focus();
+          } catch (error) {
+            // Handle the error gracefully
+            console.log('Error focusing on text input:', error);
+          }
         }, 100); // Adjust the interval as needed (e.g., every 5 seconds)
-      
+    
         // Clear the interval when the component is unmounted
         return () => clearInterval(focusInterval);
       }, []); // Empty dependency array means the effect runs once after the initial render
@@ -251,14 +248,6 @@
           console.log('Write error:', err);
         }
       };
-      
-      
-      
-      
-      
-      
-    
-      
       
       const handleVerifyPress = () => {
         console.log('Verify button pressed');
