@@ -30,7 +30,7 @@
       const [errorMessage, setErrorMessage] = useState('');
 
       const textInputRef = useRef(null);
-
+      
       const numberTextMapping = {
         '0619291971': {
           text: 'Start program',
@@ -84,6 +84,7 @@
           image: require('../assets/instructions/4.png'),
         },
         '3996473363': { text: 'Five', image: require('../assets/instructions/5.png') },
+        '1362825858': { text: 'Object', image: require('../assets/instructions/obstacleAhead.png')}
       };
 
       // Define the mapping function
@@ -105,6 +106,7 @@
           '0622660643': 'THREE',
           '0293694387': 'FOUR',
           '3996473363': 'FIVE',
+          '1362825858': 'OBJECT',
         };
 
         // Map RFID inputs
@@ -164,7 +166,6 @@
         // Clear the interval when the component is unmounted
         return () => clearInterval(focusInterval);
       }, []); // Empty dependency array means the effect runs once after the initial render
-      
 
       const handleStopPress = () => {
         console.log('Stop button pressed');
@@ -181,6 +182,29 @@
       
         // Log the mapped inputs
         console.log('List of Code Instructions:', mappedRFIDtoCode);
+      
+        // Check if the sequence is equal to the specified one
+        const objBackward = ["START_PROGRAM", "IF", "OBJECT", "BACKWARD", "ELSE", "FORWARD", "END_IF", "END_PROGRAM"];
+        const objTurnLeft = ["START_PROGRAM", "IF", "OBJECT", "TURN_LEFT", "ELSE", "FORWARD", "END_IF", "END_PROGRAM"];
+        const objTurnRight = ["START_PROGRAM", "IF", "OBJECT", "TURN_RIGHT", "ELSE", "FORWARD", "END_IF", "END_PROGRAM"];
+        if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(objBackward)) {
+          // Send BluetoothSerial "X"
+          await BluetoothSerial.write('X');
+          console.log('Write success:', 'X');
+          return;
+        }
+        if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(objTurnLeft)) {
+          // Send BluetoothSerial "X"
+          await BluetoothSerial.write('Y');
+          console.log('Write success:', 'Y');
+          return;
+        }
+        if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(objTurnRight)) {
+          // Send BluetoothSerial "X"
+          await BluetoothSerial.write('Z');
+          console.log('Write success:', 'Z');
+          return;
+        }
       
         // Check if the start program RFID value is at the first index
         if (mappedRFIDtoCode.length === 0 || mappedRFIDtoCode[0] !== 'START_PROGRAM') {
