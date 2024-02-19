@@ -11,6 +11,7 @@
     } from 'react-native';
     import BluetoothSerial from 'react-native-bluetooth-serial';
     import { useNavigation } from '@react-navigation/native';
+    import { LayoutAnimation } from 'react-native';
 
 
     const TerminalPage = () => {
@@ -135,10 +136,13 @@
 
       const handleInputChange = (text) => {
         setTextInputValue(text);
-
+    
         if (numberTextMapping[text]) {
           setRfidInputs((prevInputs) => [...prevInputs, text]);
-
+    
+          // Animate the new image
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    
           setTimeout(() => {
             setTextInputValue('');
             textInputRef.current.focus();
@@ -146,6 +150,7 @@
         } else if (text.length === 10) {
           setTextInputValue('');
         }
+    
         // After adding a new image, scroll to the bottom
         if (scrollViewRef.current) {
           scrollViewRef.current.scrollToEnd({ animated: true });
@@ -430,18 +435,24 @@
             showSoftInputOnFocus={false}
           />
         </View>
-        <ScrollView style={styles.whiteBox} ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
-        {rfidInputs.map((input, index) => (
-          <TouchableOpacity key={index} onPress={() => handleImageClick(index)}>
-            <View style={{ alignItems: determineAlignment(input) }}>
-              <Image
-                source={numberTextMapping[input].image}
-                style={styles.instructionImage}
-              />
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+        <ScrollView
+            style={{ ...styles.whiteBox, flex: 1 }}
+            contentContainerStyle={{ paddingBottom: 35 }}
+            ref={scrollViewRef}
+            onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+            showsVerticalScrollIndicator={false} // Add this line to hide the vertical scroll indicator
+          >
+            {rfidInputs.map((input, index) => (
+              <TouchableOpacity key={index} onPress={() => handleImageClick(index)}>
+                <View style={{ alignItems: determineAlignment(input) }}>
+                  <Image
+                    source={numberTextMapping[input].image}
+                    style={styles.instructionImage}
+                  />
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         <View style={styles.buttonContainer}>
           {/* Existing four buttons */}
           <View style={styles.buttonRow}>
