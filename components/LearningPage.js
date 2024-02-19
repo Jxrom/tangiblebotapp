@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Image } from 'react-native';
 import Video from 'react-native-video';
+import { useNavigation } from '@react-navigation/native'; // Import the useNavigation hook
 
 const LearningPage = () => {
+  const navigation = useNavigation(); // Use the useNavigation hook to get the navigation prop
+
   const [moduleExpanded1, setModuleExpanded1] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
 
@@ -18,11 +21,24 @@ const LearningPage = () => {
     setShowVideoModal(false);
   };
 
+  const handleCloseButton = () => {
+    // Add your logic for the top-right button press
+    console.log('Close button pressed');
+    navigation.navigate('StartUpPage'); // Use the navigation prop directly
+    // ...
+  };
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={handleCloseButton} style={styles.closeButton}>
+        <Image
+          source={require('../assets/buttons/terminalPageButtons/close.png')}
+          style={styles.closeIcon}
+        />
+      </TouchableOpacity>
       <View style={styles.whiteBox}>
         <View style={[styles.boxContainer, { position: 'absolute', top: -30, zIndex: 1, left: '10%' }]}>
-          <Text style={styles.boxText}>Robot Program Learning Guide</Text>
+          <Text style={styles.boxText}>Robot Program Modules</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={openVideoModal}>
@@ -63,21 +79,6 @@ const LearningPage = () => {
           {/* Add other modules as needed */}
         </View>
       </View>
-
-      {/* Video Modal */}
-      <Modal visible={showVideoModal} animationType="slide">
-        <View style={styles.videoModalContainer}>
-          <Video
-           source={require('../assets/Video/Basic_Forward.mp4')}
-            style={styles.videoPlayer}
-            controls
-            paused={false} // Set to true to start paused
-          />
-          <TouchableOpacity style={styles.closeButton} onPress={closeVideoModal}>
-            <Text style={styles.closeButtonText}>Close Video</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 300,
     height: 50,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   boxText: {
     color: '#fff',
@@ -161,8 +162,9 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: 20,
-    right: 20,
+    top: 10,
+    right: 10,
+    zIndex: 2,
   },
   closeButtonText: {
     color: '#fff',

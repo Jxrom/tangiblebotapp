@@ -121,8 +121,8 @@
       const MovementToSerialMapping = {
         'FORWARD': 'F',
         'BACKWARD': 'B',
-        'TURN_RIGHT': 'R',
-        'TURN_LEFT': 'L',
+        'TURN_RIGHT': 'D',
+        'TURN_LEFT': 'A',
       };
       
       const NumberToDelayMapping = {
@@ -184,9 +184,9 @@
         console.log('List of Code Instructions:', mappedRFIDtoCode);
       
         // Check if the sequence is equal to the specified one
-        const objBackward = ["START_PROGRAM", "IF", "OBJECT", "BACKWARD", "ELSE", "FORWARD", "END_IF", "END_PROGRAM"];
-        const objTurnLeft = ["START_PROGRAM", "IF", "OBJECT", "TURN_LEFT", "ELSE", "FORWARD", "END_IF", "END_PROGRAM"];
-        const objTurnRight = ["START_PROGRAM", "IF", "OBJECT", "TURN_RIGHT", "ELSE", "FORWARD", "END_IF", "END_PROGRAM"];
+        const objBackward = ["START_PROGRAM", "IF", "OBJECT", "BACKWARD", "ELSE", "LOOP", "FORWARD", "END_LOOP", "END_IF", "END_PROGRAM"];
+        const objTurnLeft = ["START_PROGRAM", "IF", "OBJECT", "TURN_LEFT", "ELSE", "LOOP", "FORWARD", "END_LOOP", "END_IF", "END_PROGRAM"];
+        const objTurnRight = ["START_PROGRAM", "IF", "OBJECT", "TURN_RIGHT", "ELSE", "LOOP", "FORWARD", "END_LOOP", "END_IF", "END_PROGRAM"];
         if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(objBackward)) {
           // Send BluetoothSerial "X"
           await BluetoothSerial.write('X');
@@ -251,7 +251,6 @@
         // Log the created mapping
         console.log('Robot Instructions Mapping:', robotInstructions);
       
-        // Iterate through robotInstructions and send commands to BluetoothSerial
         try {
           for (let k = 0; k < loopParameter; k++) {
             for (const [instruction, delay] of Object.entries(robotInstructions)) {
@@ -266,6 +265,7 @@
       
               // After the delay, send the character 'S'
               await BluetoothSerial.write('S');
+              
             }
           }
         } catch (err) {

@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@lowkey/react-native-gif": "^3.1.0",
     "@react-native-picker/picker": "^2.6.1",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
@@ -21,8 +22,10 @@
     "react-native-collapsible": "^1.6.1",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-elements": "^3.4.3",
-    "react-native-gesture-handler": "^2.14.1",
+    "react-native-fast-image": "^8.6.3",
+    "react-native-gesture-handler": "^2.15.0",
     "react-native-gif": "^1.0.3",
+    "react-native-reanimated": "^3.7.0",
     "react-native-safe-area-context": "^4.8.2",
     "react-native-screens": "^3.29.0",
     "react-native-sqlite-storage": "^6.0.1",

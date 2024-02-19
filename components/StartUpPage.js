@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import Video from "react-native-video";
+import gifVideo from '../assets/Video/coding.mp4'
 
 const StartUpPage = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Tangible Bot</Text>
-      <Image
-        source={require('../assets/images/RobotImg.png')}
-        style={styles.image}
+      <Video
+        repeat
+        source={gifVideo}
+        resizeMode="cover"
+        style={styles.video}
       />
       <TouchableOpacity
         style={styles.button}
@@ -38,46 +42,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#9AD0C2',
   },
-  image: {
-    width: 350,
-    height: 350,
-    resizeMode: 'contain',
+  video: {
+    marginTop: 10,
+    width: 300, // set your desired width
+    height: 200, // set your desired height
     marginBottom: 20,
+    borderRadius: 20,
   },
   text: {
     fontFamily: 'RobotoMono-Bold',
     fontSize: 35,
     color: 'white',
-    backgroundColor: '#265073', // Add this line to set the background color
-    padding: 10, // Add padding if needed
+    backgroundColor: '#265073',
+    padding: 10,
     borderRadius: 10,
-    textShadowColor: 'black',  // Outline color
-    textShadowOffset: { width: 1, height: 1 },  // Outline offset
-    textShadowRadius: 2,  // Outline radius
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
     borderWidth: 1,
     borderColor: 'black',
   },
-  
   button: {
     backgroundColor: '#2D9596',
     padding: 20,
     borderRadius: 20,
     marginTop: 10,
     width: 230,
-    borderWidth: 1,  // Border width for the outline
-    borderColor: 'black',  // Border color for the outline
+    borderWidth: 1,
+    borderColor: 'black',
   },
-  
   buttonText: {
     fontFamily: 'RobotoMono-Bold',
     fontSize: 20,
     color: 'white',
     textAlign: 'center',
-    textShadowColor: 'black',  // Outline color
-    textShadowOffset: { width: 1, height: 1 },  // Outline offset
-    textShadowRadius: 2,  // Outline radius
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
-  
 });
 
 export default StartUpPage;
