@@ -13,7 +13,6 @@
     import { useNavigation } from '@react-navigation/native';
     import { LayoutAnimation } from 'react-native';
 
-
     const TerminalPage = () => {
       const [textInputValue, setTextInputValue] = useState('');
       const [rfidInputs, setRfidInputs] = useState([]);
@@ -43,7 +42,7 @@
         },
         '0619600947': {
           text: 'Loop',
-          image: require('../assets/instructions/loop.png'),
+          image: require('../assets/instructions/start_loop.png'),
         },
         '0617766627': {
           text: 'End Loop',
@@ -74,6 +73,10 @@
           text: 'Turn Left',
           image: require('../assets/instructions/turn_left.png'),
         },
+        '1365034626': {
+          text: 'Stop',
+          image: require('../assets/instructions/stop.png'),
+        },
         '0619293587': { text: 'One', image: require('../assets/instructions/1.png') },
         '0437147523': { text: 'Two', image: require('../assets/instructions/2.png') },
         '0622660643': {
@@ -85,7 +88,40 @@
           image: require('../assets/instructions/4.png'),
         },
         '3996473363': { text: 'Five', image: require('../assets/instructions/5.png') },
-        '1362825858': { text: 'Object', image: require('../assets/instructions/obstacleAhead.png')}
+        '1365368962': { text: 'Infinity', image: require('../assets/instructions/infinity.png') },
+        '1359672946': { text: 'ObstacleAhead', image: require('../assets/instructions/obstacle_ahead.png')},
+        '1362825858': {
+          text: '360',
+          image: require('../assets/instructions/360.png'),
+        },
+        '0622330115': {
+          text: '45',
+          image: require('../assets/instructions/45.png'),
+        },
+        '1366603650': {
+          text: '90',
+          image: require('../assets/instructions/90.png'),
+        },
+        '1364817282': {
+          text: '135',
+          image: require('../assets/instructions/135.png'),
+        },
+        '0437137523': {
+          text: '180',
+          image: require('../assets/instructions/180.png'),
+        },
+        '0436991283': {
+          text: '225',
+          image: require('../assets/instructions/225.png'),
+        },
+        '0624927379': {
+          text: '270',
+          image: require('../assets/instructions/270.png'),
+        },
+        '1367111794': {
+          text: '315',
+          image: require('../assets/instructions/315.png'),
+        },
       };
 
       // Define the mapping function

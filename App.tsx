@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import StartUpPage from './components/StartUpPage'
 import TerminalPage from './components/TerminalPage';
-import HowToUsePage from './components/HowToUsePage';
 import BluetoothPage from './components/BluetoothPage';
 import MenuPage from './components/MenuPage';
 import AboutPage from './components/AboutPage';
@@ -33,11 +32,6 @@ const App = () => {
         <Stack.Screen
           name="TerminalPage"
           component={TerminalPage}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="HowToUsePage"
-          component={HowToUsePage}
           options={{ headerShown: false }}
         />
         <Stack.Screen
