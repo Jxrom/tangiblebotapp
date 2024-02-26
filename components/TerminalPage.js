@@ -305,7 +305,7 @@ const TerminalPage = () => {
   }, []); // Empty dependency array means the effect runs once after the initial render
 
   const handleStopPress = () => {
-    console.log('Stop button pressed');
+    // Send the character 'S' using BluetoothSerial
     BluetoothSerial.write('S').then((res) => {
       console.log('Write success:', res);
     }).catch((err) => {
@@ -316,106 +316,152 @@ const TerminalPage = () => {
   const handlePlayPress = async () => {
     // Map RFID inputs
     const mappedRFIDtoCode = mapRFIDInputs(rfidInputs);
-  
+
     // Log the mapped inputs
     console.log('List of Code Instructions:', mappedRFIDtoCode);
-  
-    // Check if the sequence is equal to the specified one
+
+    // Define sequences for backward, turn left, and turn right
     const objBackward = ["START_PROGRAM", "IF", "OBSTACLE", "BACKWARD", "ELSE", "START_LOOP", "INFINITY", "FORWARD", "END_LOOP", "END_IF", "END_PROGRAM"];
     const objTurnLeft = ["START_PROGRAM", "IF", "OBSTACLE", "TURN_LEFT", "ELSE", "START_LOOP", "INFINITY", "FORWARD", "END_LOOP", "END_IF", "END_PROGRAM"];
     const objTurnRight = ["START_PROGRAM", "IF", "OBSTACLE", "TURN_RIGHT", "ELSE", "START_LOOP", "INFINITY", "FORWARD", "END_LOOP", "END_IF", "END_PROGRAM"];
+
+    // Check if the sequence is equal to the specified one
     if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(objBackward)) {
-      // Send BluetoothSerial "X"
-      await BluetoothSerial.write('R');
-      console.log('Write success:', 'R');
-      return;
+        await BluetoothSerial.write('R');
+        console.log('Write success:', 'R');
+        return;
     }
     if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(objTurnLeft)) {
-      // Send BluetoothSerial "X"
-      await BluetoothSerial.write('T');
-      console.log('Write success:', 'T');
-      return;
+        await BluetoothSerial.write('T');
+        console.log('Write success:', 'T');
+        return;
     }
     if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(objTurnRight)) {
-      // Send BluetoothSerial "X"
-      await BluetoothSerial.write('Y');
-      console.log('Write success:', 'Y');
-      return;
+        await BluetoothSerial.write('Y');
+        console.log('Write success:', 'Y');
+        return;
     }
-  
+
     // Check if the start program RFID value is at the first index
     if (mappedRFIDtoCode.length === 0 || mappedRFIDtoCode[0] !== 'START_PROGRAM') {
-      // Display modal with alert
-      setStartEndProgramModalVisible(true);
-      return;
+        // Display modal with alert
+        setStartEndProgramModalVisible(true);
+        return;
     }
-  
+
     // Check if the end program RFID value is at the last index
     if (mappedRFIDtoCode.length === 0 || mappedRFIDtoCode[mappedRFIDtoCode.length - 1] !== 'END_PROGRAM') {
-      // Display modal with alert
-      setStartEndProgramModalVisible(true);
-      return;
+        // Display modal with alert
+        setStartEndProgramModalVisible(true);
+        return;
     }
-  
-    // Create a mapping of robot movement instruction and robot delay parameters
-    const robotInstructions = {};
-    let currentMovementInstruction = null;
-    let currentDelayParameter = null;
-  
-    let loopParameter = 1; // Default loop parameter
-    let isInfiniteLoop = false;
-  
-    mappedRFIDtoCode.forEach((code, index) => {
-      if (code === 'START_LOOP' && index + 1 < mappedRFIDtoCode.length) {
-        // If "LOOP" is found and there is a number after it
-        const loopCountCode = mappedRFIDtoCode[index + 1];
-        if (loopCountCode in NumberToDelayMapping) {
-          loopParameter = NumberToDelayMapping[loopCountCode];
-          console.log('Loop Count:', loopParameter);
+
+    // Create an array to store the serial characters and delays
+    const serialCharacters = [];
+
+    // Add a variable to track the loop count
+    let loopCount = 1;
+
+    // Add a flag to check if START_LOOP is found
+    let startLoopFound = false;
+
+    // Iterate over RFID Inputs
+    for (let i = 1; i < mappedRFIDtoCode.length - 1; i++) {
+        const instructionCode = mappedRFIDtoCode[i];
+
+        // Log the instruction code
+        console.log(instructionCode);
+
+        // Check if the instruction code is a movement or delay
+        if (MovementToSerialMapping[instructionCode]) {
+            // If it's a movement, add the corresponding serial character
+            serialCharacters.push(MovementToSerialMapping[instructionCode]);
+        } else if (NumberToDelayMapping[instructionCode]) {
+            // If it's a delay, add the corresponding delay value in seconds
+            serialCharacters.push(NumberToDelayMapping[instructionCode]);
+        } else if (instructionCode === 'START_LOOP') {
+            // Check if START_LOOP is present in mappedRFIDtoCode
+            startLoopFound = true;
+
+            // Find the next instruction code
+            const nextInstructionCode = mappedRFIDtoCode[i + 1];
+
+            // Check if the next instruction is a number in NumberToDelayMapping
+            if (NumberToDelayMapping[nextInstructionCode]) {
+                // Set the loop count based on the equivalent number
+                loopCount = NumberToDelayMapping[nextInstructionCode];
+                i++; // Skip the next instruction code
+            }
+        } else if (instructionCode === 'END_LOOP') {
+            // Repeat the loop according to the loop count
+            for (let j = 0; j < loopCount; j++) {
+                // Send the serial characters and delays to the device or perform other actions
+                for (let k = 0; k < serialCharacters.length; k++) {
+                    const characterToSend = serialCharacters[k];
+
+                    console.log(characterToSend);
+
+                    if (typeof characterToSend === 'number') {
+                        // If the character is a number, wait for the specified delay before sending the next character
+                        console.log("Delay (Seconds): ", characterToSend);
+                        await new Promise(resolve => setTimeout(resolve, characterToSend * 1000));
+
+                        // After the delay, send the character 'S'
+                        await BluetoothSerial.write('S');
+
+                        await new Promise(resolve => setTimeout(resolve, 1000)); // Delay in seconds
+                    } else {
+                        // If it's a movement character, send it using BluetoothSerial
+                        console.log("Robot Instruction: ", characterToSend);
+                        await BluetoothSerial.write(characterToSend);
+                    }
+                }
+            }
+
+            // Reset the loop count after completing the loop
+            loopCount = 1;
+            // Clear the serial characters array
+            serialCharacters.length = 0;
+        } else {
+            // Handle other instructions as needed
         }
-      } else if (code === 'INFINITY' && currentMovementInstruction === 'START_LOOP') {
-        // If "INFINITY" is found after the loop start tag
-        isInfiniteLoop = true;
-      } else if (code in MovementToSerialMapping) {
-        currentMovementInstruction = MovementToSerialMapping[code];
-        currentDelayParameter = null; // Reset delay parameter when a movement instruction is found
-      } else if (code in NumberToDelayMapping) {
-        currentDelayParameter = NumberToDelayMapping[code];
-      }
-  
-      // Add the current instruction and delay parameter to the mapping
-      if (currentMovementInstruction !== null) {
-        robotInstructions[currentMovementInstruction] = currentDelayParameter || null;
-      }
-    });
-  
-    // Log the created mapping
-    console.log('Robot Instructions Mapping:', robotInstructions);
-  
-    try {
-      for (let k = 0; isInfiniteLoop || k < loopParameter; k++) {
-        for (const [instruction, delay] of Object.entries(robotInstructions)) {
-          // Write character to BluetoothSerial
-          await BluetoothSerial.write(instruction);
-          console.log('Write success:', instruction);
-  
-          // Introduce a delay if needed between characters
-          if (delay) {
-            await new Promise(resolve => setTimeout(resolve, delay * 1000)); // Delay in seconds
-          }
-  
-          // After the delay, send the character 'S'
-          await BluetoothSerial.write('S');
-  
-          await new Promise(resolve => setTimeout(resolve, 2000)); // Delay in seconds
-        }
-      }
-    } catch (err) {
-      console.log('Write error:', err);
     }
-  };
+
+    // If START_LOOP was not found, execute the loop once
+    if (!startLoopFound) {
+        for (let j = 0; j < loopCount; j++) {
+            // Send the serial characters and delays to the device or perform other actions
+            for (let k = 0; k < serialCharacters.length; k++) {
+                const characterToSend = serialCharacters[k];
+
+                console.log(characterToSend);
+
+                if (typeof characterToSend === 'number') {
+                    // If the character is a number, wait for the specified delay before sending the next character
+                    console.log("Delay (Seconds): ", characterToSend);
+                    await new Promise(resolve => setTimeout(resolve, characterToSend * 1000));
+
+                    // After the delay, send the character 'S'
+                    await BluetoothSerial.write('S');
+
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // Delay in seconds
+                } else {
+                    // If it's a movement character, send it using BluetoothSerial
+                    console.log("Robot Instruction: ", characterToSend);
+                    await BluetoothSerial.write(characterToSend);
+                }
+            }
+        }
+    }
+};
+
+
   
   
+  
+  
+  
+
   const handleVerifyPress = () => {
     console.log('Verify button pressed');
     console.log('RFID Inputs:', rfidInputs);

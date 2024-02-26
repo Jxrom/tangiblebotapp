@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   boxText: {
-    color: '#fff',
+    color: 'white',
     textAlign: 'center',
     fontSize: 16,
     fontWeight: 'bold',
