@@ -512,14 +512,12 @@ const handleCloseButton = () => {
 };
 
 const handleMoveUp = () => {
-  // Add your logic for the "Move Up" button press
-
   if (clickedImageIndex === null || clickedImageIndex <= 0) {
-    // If no image is clicked or the clicked image is already at the top, no need to move up
     return;
   }
 
-  const selectedIndex = clickedImageIndex; // Use the stored index of the clicked image
+  // Use the stored index of the clicked image
+  const selectedIndex = clickedImageIndex;
 
   // Swap the selected RFID input with the one before it
   const updatedRfidInputs = [...rfidInputs];
@@ -530,19 +528,17 @@ const handleMoveUp = () => {
 
   setRfidInputs(updatedRfidInputs);
 
-  // Reset the clicked image index after moving up
-  setClickedImageIndex(null);
+  // Update the clicked image index after moving up
+  setClickedImageIndex(selectedIndex - 1);
 };
 
 const handleMoveDown = () => {
-  // Add your logic for the "Move Down" button press
-
   if (clickedImageIndex === null || clickedImageIndex >= rfidInputs.length - 1) {
-    // If no image is clicked or the clicked image is already at the bottom, no need to move down
     return;
   }
 
-  const selectedIndex = clickedImageIndex; // Use the stored index of the clicked image
+  // Use the stored index of the clicked image
+  const selectedIndex = clickedImageIndex;
 
   // Swap the selected RFID input with the one after it
   const updatedRfidInputs = [...rfidInputs];
@@ -553,8 +549,8 @@ const handleMoveDown = () => {
 
   setRfidInputs(updatedRfidInputs);
 
-  // Reset the clicked image index after moving down
-  setClickedImageIndex(null);
+  // Update the clicked image index after moving down
+  setClickedImageIndex(selectedIndex + 1);
 };
 
 const handleImageClick = (index) => {

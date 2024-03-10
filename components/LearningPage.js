@@ -42,7 +42,7 @@ const LearningPage = () => {
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={openVideoModal}>
-            <Text style={styles.buttonText}>Module 0: What is Programming?</Text>
+            <Text style={styles.buttonText}>Module 0: What is Coding/Programming?</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={toggleModule1}>
             <Text style={styles.buttonText}>Module 1: Learn the Basic Movements of the Robot</Text>
