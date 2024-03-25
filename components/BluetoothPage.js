@@ -11,6 +11,7 @@ import {
 
 import _ from 'lodash';
 import BluetoothSerial from 'react-native-bluetooth-serial';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class BluetoothPage extends Component {
   constructor(props) {
@@ -24,34 +25,52 @@ export default class BluetoothPage extends Component {
     };
   }
 
-  componentDidMount() {
-    Promise.all([
-      BluetoothSerial.isEnabled(),
-      BluetoothSerial.list(),
-    ])
-      .then((values) => {
-        const [isEnabled, devices] = values;
-        this.setState({ isEnabled, devices });
-      })
-      .catch((err) => console.log(`Error: ${err.message}`));
+  async componentDidMount() {
+    try {
+      const isConnected = await AsyncStorage.getItem('bluetoothConnected');
+      const connected = isConnected === 'true';
+      this.setState({ connected });
 
-    BluetoothSerial.on('bluetoothEnabled', () => {
       Promise.all([
         BluetoothSerial.isEnabled(),
         BluetoothSerial.list(),
       ])
         .then((values) => {
           const [isEnabled, devices] = values;
-          this.setState({ devices });
+          this.setState({ isEnabled, devices });
         })
         .catch((err) => console.log(`Error: ${err.message}`));
-    });
 
-    BluetoothSerial.on('bluetoothDisabled', () => {
-      this.setState({ devices: [] });
-    });
+      BluetoothSerial.on('bluetoothEnabled', () => {
+        Promise.all([
+          BluetoothSerial.isEnabled(),
+          BluetoothSerial.list(),
+        ])
+          .then((values) => {
+            const [isEnabled, devices] = values;
+            this.setState({ devices });
+          })
+          .catch((err) => console.log(`Error: ${err.message}`));
+      });
 
-    BluetoothSerial.on('error', (err) => console.log(`Error: ${err.message}`));
+      BluetoothSerial.on('bluetoothDisabled', () => {
+        this.setState({ devices: [] });
+      });
+
+      BluetoothSerial.on('error', (err) => console.log(`Error: ${err.message}`));
+
+      BluetoothSerial.on('connectionLost', () => {
+        this.setState({ connected: false });
+        AsyncStorage.setItem('bluetoothConnected', 'false');
+      });
+
+      BluetoothSerial.on('connectionSuccess', () => {
+        this.setState({ connected: true });
+        AsyncStorage.setItem('bluetoothConnected', 'true');
+      });
+    } catch (error) {
+      console.error('Error loading Bluetooth connection status:', error);
+    }
   }
 
   connect(device) {
@@ -63,8 +82,27 @@ export default class BluetoothPage extends Component {
           `Connected to device ${device.name}`,
           ToastAndroid.SHORT
         );
-        // Navigate to MenuPage
-        this.props.navigation.navigate('StartUpPage');
+
+        // Send "I", "W", and "S" letters after a successful connection
+        BluetoothSerial.write("I")
+          .then(() => console.log("Successfully sent 'I'"))
+          .catch((err) => console.log(`Error sending 'I': ${err.message}`));
+
+        setTimeout(() => {
+          BluetoothSerial.write("W")
+            .then(() => console.log("Successfully sent 'W'"))
+            .catch((err) => console.log(`Error sending 'W': ${err.message}`));
+        }, 1000); // Delay 1 second before sending "W"
+
+        setTimeout(() => {
+          BluetoothSerial.write("S")
+            .then(() => console.log("Successfully sent 'S'"))
+            .catch((err) => console.log(`Error sending 'S': ${err.message}`));
+        }, 2000); // Delay 2 seconds before sending "S"
+
+        // Save the connection status
+        this.setState({ connected: true });
+        AsyncStorage.setItem('bluetoothConnected', 'true');
       })
       .catch((err) => console.log(err.message));
   }
@@ -73,7 +111,6 @@ export default class BluetoothPage extends Component {
     let deviceName = item.item.name || item.item.id;
     let iconSource = null;
 
-    // Check if the device name is "HC-05" and set the icon accordingly
     if (deviceName === 'HC-05') {
       deviceName = 'Robot Device';
       iconSource = require('../assets/images/RobotIcon.png');
@@ -93,13 +130,13 @@ export default class BluetoothPage extends Component {
 
   enable() {
     BluetoothSerial.enable()
-      .then((res) => this.setState({ isEnabled: true }))
+      .then(() => this.setState({ isEnabled: true }))
       .catch((err) => ToastAndroid.show(err.message, ToastAndroid.SHORT));
   }
 
   disable() {
     BluetoothSerial.disable()
-      .then((res) => this.setState({ isEnabled: false }))
+      .then(() => this.setState({ isEnabled: false }))
       .catch((err) => ToastAndroid.show(err.message, ToastAndroid.SHORT));
   }
 
@@ -130,26 +167,33 @@ export default class BluetoothPage extends Component {
   }
 
   render() {
-    const bluetoothButtonImage =
-      this.state.isEnabled
-        ? require('../assets/buttons/bluetoothOn.png')
-        : require('../assets/buttons/bluetoothOff.png');
+    const bluetoothButtonImage = this.state.isEnabled
+      ? require('../assets/buttons/bluetoothOn.png')
+      : require('../assets/buttons/bluetoothOff.png');
+
+    const leftUpperImageSource = this.state.connected
+      ? require('../assets/images/bluetoothIndicatorOn.png')
+      : require('../assets/images/bluetoothIndicatorOff.png');
 
     const handleCloseButton = () => {
-      // Add your logic for the top-right button press
       console.log('Close button pressed');
       this.props.navigation.navigate('StartUpPage');
-      // ...
     };
 
     return (
       <View style={styles.container}>
+        <Image
+          source={leftUpperImageSource}
+          style={styles.leftUpperImage}
+        />
+
         <TouchableOpacity onPress={handleCloseButton} style={styles.closeButton}>
           <Image
             source={require('../assets/buttons/terminalPageButtons/close.png')}
             style={styles.closeIcon}
           />
         </TouchableOpacity>
+
         <View style={styles.blueBox}>
           <Text style={styles.toolbarTitle}>Connect to Robot</Text>
         </View>
@@ -230,6 +274,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
+    zIndex: 2,
+  },
+  leftUpperImage: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    width: 24,  // Adjust the width and height according to your image size
+    height: 24,
     zIndex: 2,
   },
   whiteBox: {

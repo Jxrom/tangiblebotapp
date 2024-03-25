@@ -28,7 +28,7 @@ const TerminalPage = () => {
   // Add these lines at the beginning of the component, after importing necessary modules and declaring other states
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
+  
   const textInputRef = useRef(null);
   
   const numberTextMapping = {
@@ -90,6 +90,7 @@ const TerminalPage = () => {
     '3996473363': { text: 'Five', image: require('../assets/instructions/5.png') },
     '1365368962': { text: 'Infinity', image: require('../assets/instructions/infinity.png') },
     '1359672946': { text: 'ObstacleAhead', image: require('../assets/instructions/obstacle_ahead.png')},
+    '0374701737': { text: 'NoObstacleAhead', image: require('../assets/instructions/no_obstacle_ahead.png')},
     '1362825858': {
       text: '360',
       image: require('../assets/instructions/360.png'),
@@ -146,6 +147,7 @@ const TerminalPage = () => {
       '3996473363': 'FIVE',
       '1365368962': 'INFINITY',
       '1359672946': 'OBSTACLE',
+      '0374701737': 'NO_OBSTACLE',
       '1362825858': '360',
       '0622330115': '45',
       '1366603650': '90',
@@ -325,6 +327,10 @@ const TerminalPage = () => {
     const objTurnLeft = ["START_PROGRAM", "IF", "OBSTACLE", "TURN_LEFT", "ELSE", "START_LOOP", "INFINITY", "FORWARD", "END_LOOP", "END_IF", "END_PROGRAM"];
     const objTurnRight = ["START_PROGRAM", "IF", "OBSTACLE", "TURN_RIGHT", "ELSE", "START_LOOP", "INFINITY", "FORWARD", "END_LOOP", "END_IF", "END_PROGRAM"];
 
+    const noObstacleBackward = ["START_PROGRAM", "IF", "NO_OBSTACLE", "START_LOOP", "INFINITY", "FORWARD", "END_LOOP", "ELSE", "BACKWARD", "END_IF", "END_PROGRAM"];
+    const noObstacleTurnLeft = ["START_PROGRAM", "IF", "NO_OBSTACLE", "START_LOOP", "INFINITY", "FORWARD", "END_LOOP", "ELSE", "TURN_LEFT", "END_IF", "END_PROGRAM"];
+    const noObstacleTurnRight = ["START_PROGRAM", "IF", "NO_OBSTACLE", "START_LOOP", "INFINITY", "FORWARD", "END_LOOP", "ELSE", "TURN_RIGHT", "END_IF", "END_PROGRAM"];
+
     // Check if the sequence is equal to the specified one
     if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(objBackward)) {
         await BluetoothSerial.write('R');
@@ -337,6 +343,22 @@ const TerminalPage = () => {
         return;
     }
     if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(objTurnRight)) {
+        await BluetoothSerial.write('Y');
+        console.log('Write success:', 'Y');
+        return;
+    }
+    // Check if the sequence is equal to the specified one
+    if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(noObstacleBackward)) {
+      await BluetoothSerial.write('R');
+      console.log('Write success:', 'R');
+      return;
+    }
+    if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(noObstacleTurnLeft)) {
+        await BluetoothSerial.write('T');
+        console.log('Write success:', 'T');
+        return;
+    }
+    if (JSON.stringify(mappedRFIDtoCode) === JSON.stringify(noObstacleTurnRight)) {
         await BluetoothSerial.write('Y');
         console.log('Write success:', 'Y');
         return;
@@ -391,7 +413,13 @@ const TerminalPage = () => {
                 // Set the loop count based on the equivalent number
                 loopCount = NumberToDelayMapping[nextInstructionCode];
                 i++; // Skip the next instruction code
-            }
+            } else {
+              // Display modal indicating that the next input after START_LOOP is not a valid number
+              setErrorModalVisible(true);
+              setErrorMessage('Invalid code instruction after START LOOP. Please enter a valid parameter.');
+              return; // Stop further processing
+          }
+  
         } else if (instructionCode === 'END_LOOP') {
             // Repeat the loop according to the loop count
             for (let j = 0; j < loopCount; j++) {
@@ -454,13 +482,6 @@ const TerminalPage = () => {
         }
     }
 };
-
-
-  
-  
-  
-  
-  
 
   const handleVerifyPress = () => {
     console.log('Verify button pressed');
@@ -567,8 +588,8 @@ const handleImageClick = (index) => {
 
   // Check if the image was clicked again within 500 milliseconds
   if (lastClickTimeRef.current && currentTime - lastClickTimeRef.current < 500) {
-    // Set the selected image to be removed
-    setSelectedImageToRemove(clickedInput);
+    // Set the selected image index to be removed
+    setSelectedImageToRemove(index);
 
     // Show the confirmation modal
     setConfirmationModalVisible(true);
@@ -580,7 +601,11 @@ const handleImageClick = (index) => {
 
 const handleConfirmRemove = () => {
   // Remove the selected RFID input and its corresponding image
-  setRfidInputs((prevInputs) => prevInputs.filter((input) => input !== selectedImageToRemove));
+  setRfidInputs((prevInputs) => {
+    const updatedInputs = [...prevInputs];
+    updatedInputs.splice(selectedImageToRemove, 1);
+    return updatedInputs;
+  });
 
   // Hide the confirmation modal
   setConfirmationModalVisible(false);
@@ -681,7 +706,7 @@ return (
 
     {/* Main Modal */}
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={modalVisible}
       onRequestClose={closeModal}
@@ -707,19 +732,23 @@ return (
 
     {/* Start and End Program Alert Modal */}
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={startEndProgramModalVisible}
       onRequestClose={closeStartEndProgramModal}
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Alert</Text>
+          {/* Add the Image component for your image */}
+          <Image
+            source={require('../assets/icons/red_warning.png')} // Update with your image path
+            style={styles.modalImage}
+          />
           <Text style={styles.modalItemText}>
-            Creating a Program requires Start and End!
+            Creating a Robot Program requires a START and an END!
           </Text>
           <TouchableOpacity onPress={closeStartEndProgramModal} style={styles.modalButtonBox}>
-            <Text style={styles.modalCloseButton}>Close</Text>
+            <Text style={styles.modalCloseButton}>Got it!</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -727,16 +756,20 @@ return (
 
     {/* Specific Confirmation Modal */}
   <Modal
-    animationType="slide"
+    animationType="fade"
     transparent={true}
     visible={confirmationModalVisible}
     onRequestClose={() => setConfirmationModalVisible(false)}
   >
     <View style={styles.modalContainer}>
       <View style={styles.modalContent}>
-        <Text style={styles.modalTitle}>Confirmation</Text>
+        {/* Add the Image component for your image */}
+        <Image
+            source={require('../assets/icons/yellow_warning.png')} // Update with your image path
+            style={styles.modalImage}
+          />
         <Text style={styles.modalItemText}>
-          Are you sure you want to remove this input?
+          Are you sure you want to remove this code instruction?
         </Text>
         <View style={styles.modalButtons}>
           <TouchableOpacity onPress={handleConfirmRemove}>
@@ -750,16 +783,20 @@ return (
     </View>
   </Modal>
   <Modal
-animationType="slide"
+animationType="fade"
 transparent={true}
 visible={clearConfirmationModalVisible}
 onRequestClose={() => setClearConfirmationModalVisible(false)}
 >
 <View style={styles.modalContainer}>
 <View style={styles.modalContent}>
-  <Text style={styles.modalTitle}>Confirmation</Text>
+  {/* Add the Image component for your image */}
+  <Image
+            source={require('../assets/icons/yellow_warning.png')} // Update with your image path
+            style={styles.modalImage}
+          />
   <Text style={styles.modalItemText}>
-    Are you sure you want to clear all RFID inputs?
+    Are you sure you want to clear all code instruction?
   </Text>
   <View style={styles.modalButtons}>
     <TouchableOpacity onPress={handleConfirmClear}>
@@ -774,17 +811,22 @@ onRequestClose={() => setClearConfirmationModalVisible(false)}
 </Modal>
 
 <Modal
-animationType="slide"
+animationType="fade"
 transparent={true}
 visible={errorModalVisible}
 onRequestClose={() => setErrorModalVisible(false)}
 >
 <View style={styles.modalContainer}>
 <View style={styles.modalContent}>
-  <Text style={styles.modalTitle}>Error</Text>
+  {/* Add the Image component for your image */}
+  <Image
+            source={require('../assets/icons/red_warning.png')} // Update with your image path
+            style={styles.modalImage}
+          />
+  <Text style={styles.modalTitle}>Syntax Error</Text>
   <Text style={styles.modalItemText}>{errorMessage}</Text>
   <TouchableOpacity onPress={() => setErrorModalVisible(false)} style={styles.modalButtonBox}>
-    <Text style={styles.modalCloseButton}>Close</Text>
+    <Text style={styles.modalCloseButton}>Okay</Text>
   </TouchableOpacity>
 </View>
 </View>
@@ -882,6 +924,7 @@ const styles = StyleSheet.create({
   modalItemText: {
     fontSize: 18,
     fontFamily: 'RobotoMono-Bold',
+    alignItems: 'center',
   },
   modalButtonBox: {
     marginTop: 15,
@@ -929,6 +972,12 @@ const styles = StyleSheet.create({
     height: 43,
     resizeMode: 'contain',
     margin: 1,
+  },
+  modalImage: {
+    width: 100, // Adjust the width as needed
+    height: 100, // Adjust the height as needed
+    resizeMode: 'contain', // Adjust the resizeMode based on your image aspect ratio
+    marginBottom: 10, // Add margin as needed
   },
 
 });
