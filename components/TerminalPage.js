@@ -31,6 +31,41 @@ const TerminalPage = () => {
   
   const textInputRef = useRef(null);
   
+  const [instructionImageSize, setInstructionImageSize] = useState({
+    height: 110,
+    width: 215,
+  });
+  const [zoomInCount, setZoomInCount] = useState(0);
+  const [zoomOutCount, setZoomOutCount] = useState(0);
+
+  const MAX_HEIGHT = 110;
+  const MIN_HEIGHT = 50;
+  const MAX_WIDTH = 215;
+  const MIN_WIDTH = 95;
+
+  const handleZoomOut = () => {
+    if (instructionImageSize.height > MIN_HEIGHT && instructionImageSize.width > MIN_WIDTH) {
+      setZoomInCount(prevCount => prevCount + 1);
+      setZoomOutCount(0);
+      adjustImageSize(zoomInCount + 1);
+    }
+  };
+
+  const handleZoomIn = () => {
+    if (instructionImageSize.height < MAX_HEIGHT && instructionImageSize.width < MAX_WIDTH) {
+      setZoomOutCount(prevCount => prevCount + 1);
+      setZoomInCount(0);
+      adjustImageSize(-1 * (zoomOutCount + 1));
+    }
+  };
+
+  const adjustImageSize = (count) => {
+    let height = Math.max(Math.min(MAX_HEIGHT, 110 - count * 20), MIN_HEIGHT);
+    let width = Math.max(Math.min(MAX_WIDTH, 215 - count * 40), MIN_WIDTH);
+    setInstructionImageSize({ height, width });
+  };
+
+
   const numberTextMapping = {
     '0619291971': {
       text: 'Start program',
@@ -641,22 +676,28 @@ return (
       />
     </View>
     <ScrollView
-        style={{ ...styles.whiteBox, flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 35 }}
+        style={{...styles.whiteBox, flex: 1}}
+        contentContainerStyle={{paddingBottom: 35}}
         ref={scrollViewRef}
-        onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+        onContentSizeChange={() =>
+          scrollViewRef.current.scrollToEnd({animated: true})
+        }
         showsVerticalScrollIndicator={false} // Add this line to hide the vertical scroll indicator
       >
-        {rfidInputs.map((input, index) => (
-          <TouchableOpacity key={index} onPress={() => handleImageClick(index)}>
-            <View style={{ alignItems: determineAlignment(input) }}>
-              <Image
-                source={numberTextMapping[input].image}
-                style={styles.instructionImage}
-              />
-            </View>
-          </TouchableOpacity>
-        ))}
+        <View>
+          {rfidInputs.map((input, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleImageClick(index)}>
+              <View style={{alignItems: determineAlignment(input)}}>
+                <Image
+                  source={numberTextMapping[input].image}
+                  style={[styles.instructionImage, instructionImageSize]}
+                />
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
       </ScrollView>
     <View style={styles.buttonContainer}>
       {/* Existing four buttons */}
@@ -689,6 +730,18 @@ return (
 
       {/* New two buttons below the existing four */}
       <View style={styles.buttonRow}>
+        <TouchableOpacity onPress={handleZoomOut}>
+            <Image
+              source={require('../assets/buttons/terminalPageButtons/zoomOut.png')}
+              style={styles.icon}
+            />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleZoomIn}>
+            <Image
+              source={require('../assets/buttons/terminalPageButtons/zoomIn.png')}
+              style={styles.icon}
+            />
+        </TouchableOpacity>
         <TouchableOpacity onPress={handleStopPress}>
           <Image
             source={require('../assets/buttons/terminalPageButtons/stop.png')}
@@ -868,6 +921,7 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 100,
     borderWidth: 1,
+    padding: 10,
   },
   // Add a new style for the container of all buttons
   buttonContainer: {

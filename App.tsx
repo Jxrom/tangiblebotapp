@@ -5,31 +5,29 @@ import StartUpPage from './components/StartUpPage';
 import TerminalPage from './components/TerminalPage';
 import BluetoothPage from './components/BluetoothPage';
 import LearningPage from './components/LearningPage';
-
-// Import the new topic pages for Module 1
 import ForwardPage from './components/LearningPageModules/ForwardPage';
 import BackwardPage from './components/LearningPageModules/BackwardPage';
 import LeftPage from './components/LearningPageModules/LeftPage';
 import RightPage from './components/LearningPageModules/RightPage';
-
-// Import the new topic page for Looping
 import LoopingPage from './components/LearningPageModules/LoopingPage';
-
-// Import the new IntroConditionalPage component
 import ConditionalPage from './components/LearningPageModules/ConditionalPage';
-
-// Import the ObstaclePage and Obstacle1Page components
 import ObstaclePage from './components/LearningPageModules/ObstaclePage';
 import Obstacle1Page from './components/LearningPageModules/Obstacle1Page';
-
-// Import the new ProgrammingPage component
 import ProgrammingPage from './components/LearningPageModules/ProgrammingPage';
-
-// Import the new Module4Page component
-import Module4Page from './components/LearningPageModules/Module4Page';
-
-// Import the new SquarePage component
 import SquarePage from './components/LearningPageModules/SquarePage';
+import A0Page from './components/LearningPageModules/A0Page';
+import A1Page from './components/LearningPageModules/A1Page';
+import A2Page from './components/LearningPageModules/A2Page';
+import A3Page from './components/LearningPageModules/A3Page';
+import A4Page from './components/LearningPageModules/A4Page';
+import A5Page from './components/LearningPageModules/A5Page';
+import IVDPage from './components/LearningPageModules/IVDPage';
+import Con0Page from './components/LearningPageModules/Con0Page';
+import Prog0Page from './components/LearningPageModules/Prog0Page';
+import Loop0Page from './components/LearningPageModules/Loop0Page';
+import Obs0Page from './components/LearningPageModules/Obs0Page';
+import Pol0Page from './components/LearningPageModules/Pol0Page';
+import Module4Page from './components/LearningPageModules/Module4Page';
 
 const Stack = createStackNavigator();
 
@@ -59,7 +57,7 @@ const App = () => {
           options={{ headerShown: false }}
         />
 
-        {/* New screens for the topics in Module 1 */}
+        {/* New screens */}
         <Stack.Screen
           name="ForwardPage"
           component={ForwardPage}
@@ -80,53 +78,99 @@ const App = () => {
           component={RightPage}
           options={{ headerShown: false }}
         />
-
-        {/* New screen for the Looping topic */}
         <Stack.Screen
           name="LoopingPage"
           component={LoopingPage}
           options={{ headerShown: false }}
         />
-
-        {/* New screen for the ConditionalPage */}
         <Stack.Screen
           name="ConditionalPage"
           component={ConditionalPage}
           options={{ headerShown: false }}
         />
-
-        {/* New screen for the ObstaclePage */}
         <Stack.Screen
           name="ObstaclePage"
           component={ObstaclePage}
           options={{ headerShown: false }}
         />
-
-        {/* New screen for the Obstacle1Page */}
         <Stack.Screen
           name="Obstacle1Page"
           component={Obstacle1Page}
           options={{ headerShown: false }}
         />
-
-        {/* New screen for the ProgrammingPage */}
         <Stack.Screen
           name="ProgrammingPage"
           component={ProgrammingPage}
           options={{ headerShown: false }}
         />
-
-        {/* New screen for Module 4 */}
-        <Stack.Screen
-          name="Module4Page"
-          component={Module4Page}
-          options={{ headerShown: false }}
-        />
-
-        {/* New screen for SquarePage */}
         <Stack.Screen
           name="SquarePage"
           component={SquarePage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="A0Page"
+          component={A0Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="A1Page"
+          component={A1Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="A2Page"
+          component={A2Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="A3Page"
+          component={A3Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="A4Page"
+          component={A4Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="A5Page"
+          component={A5Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="IVDPage"
+          component={IVDPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Con0Page"
+          component={Con0Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Prog0Page"
+          component={Prog0Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Loop0Page"
+          component={Loop0Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Obs0Page"
+          component={Obs0Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Pol0Page"
+          component={Pol0Page}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Module4Page"
+          component={Module4Page}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
