@@ -714,15 +714,15 @@ return (
             style={styles.icon}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleClearPress}>
+        <TouchableOpacity onPress={handleZoomOut}>
           <Image
-            source={require('../assets/buttons/terminalPageButtons/delete.png')}
+            source={require('../assets/buttons/terminalPageButtons/zoomOut.png')}
             style={styles.icon}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleVerifyPress}>
+        <TouchableOpacity onPress={handleZoomIn}>
           <Image
-            source={require('../assets/buttons/terminalPageButtons/compile.png')}
+            source={require('../assets/buttons/terminalPageButtons/zoomIn.png')}
             style={styles.icon}
           />
         </TouchableOpacity>
@@ -730,15 +730,9 @@ return (
 
       {/* New two buttons below the existing four */}
       <View style={styles.buttonRow}>
-        <TouchableOpacity onPress={handleZoomOut}>
+        <TouchableOpacity onPress={handleClearPress}>
             <Image
-              source={require('../assets/buttons/terminalPageButtons/zoomOut.png')}
-              style={styles.icon}
-            />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleZoomIn}>
-            <Image
-              source={require('../assets/buttons/terminalPageButtons/zoomIn.png')}
+              source={require('../assets/buttons/terminalPageButtons/delete.png')}
               style={styles.icon}
             />
         </TouchableOpacity>
@@ -1022,8 +1016,8 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   closeIcon: {
-    width: 43,
-    height: 43,
+    width: 30,
+    height: 30,
     resizeMode: 'contain',
     margin: 1,
   },

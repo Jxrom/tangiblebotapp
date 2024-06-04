@@ -123,7 +123,7 @@ const A5Page = () => {
         <View style={styles.navigationButtonsContainer}>
           <TouchableOpacity
             style={[styles.navigationButton, styles.previousButton]}
-            onPress={() => navigation.navigate('SquarePage')}
+            onPress={() => navigation.navigate('Module5Topic0')}
           >
             <Text style={styles.navigationButtonText}>Previous</Text>
           </TouchableOpacity>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#98FB98',
+    backgroundColor: '#9AD0C2',
   },
   innerContainer: {
     backgroundColor: '#fff',
@@ -164,6 +164,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: '#000',
     marginTop: 30,
+    padding: 10,
+    borderBottomWidth: 2,
   },
   questionContainer: {
     marginBottom: 20,
@@ -193,7 +195,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2D9596',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -219,15 +221,25 @@ const styles = StyleSheet.create({
     width: '48%', // Adjust button width if needed
   },
   previousButton: {
-    backgroundColor: '#DDDDDD',
+    backgroundColor: '#2D9596',
   },
   proceedButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2D9596',
   },
   navigationButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  closeIcon: {
+    width: 30,
+    height: 30,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 2,
   },
 });
 

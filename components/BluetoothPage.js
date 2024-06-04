@@ -7,6 +7,8 @@ import {
   Image,
   TouchableOpacity,
   ToastAndroid,
+  Modal,
+  Button,
 } from 'react-native';
 
 import _ from 'lodash';
@@ -22,6 +24,7 @@ export default class BluetoothPage extends Component {
       devices: [],
       unpairedDevices: [],
       connected: false,
+      showModal: false,
     };
   }
 
@@ -112,8 +115,8 @@ export default class BluetoothPage extends Component {
     let iconSource = null;
 
     if (deviceName === 'HC-05') {
-      deviceName = 'Robot Device';
-      iconSource = require('../assets/images/RobotIcon.png');
+      deviceName = 'Turtle Bot';
+      iconSource = require('../assets/images/turtleBot.png');
     } else {
       iconSource = require('../assets/images/bluetoothIcon.png');
     }
@@ -180,6 +183,8 @@ export default class BluetoothPage extends Component {
       this.props.navigation.navigate('StartUpPage');
     };
 
+    const { showModal } = this.state;
+
     return (
       <View style={styles.container}>
         <Image
@@ -195,7 +200,7 @@ export default class BluetoothPage extends Component {
         </TouchableOpacity>
 
         <View style={styles.blueBox}>
-          <Text style={styles.toolbarTitle}>Connect to Robot</Text>
+          <Text style={styles.toolbarTitle}>Connect to Turtle Bot</Text>
         </View>
 
         <View style={styles.whiteBox}>
@@ -214,7 +219,7 @@ export default class BluetoothPage extends Component {
           >
             <Image
               source={require('../assets/buttons/scan.png')}
-              style={{ width: 100, height: 100, marginBottom: 30 }}
+              style={{ width: 90, height: 90, marginBottom: 30 }}
             />
           </TouchableOpacity>
 
@@ -223,10 +228,31 @@ export default class BluetoothPage extends Component {
           >
             <Image
               source={bluetoothButtonImage}
-              style={{ width: 100, height: 100, marginBottom: 30 }}
+              style={{ width: 90, height: 90, marginBottom: 30 }}
             />
           </TouchableOpacity>
         </View>
+
+        {/* Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showModal}
+          onRequestClose={() => {
+            this.setState({ showModal: false });
+          }}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>Bluetooth is connected to Turtle Bot (HC-05).</Text>
+              <Button
+                title="Close"
+                onPress={() => this.setState({ showModal: false })}
+              />
+            </View>
+          </View>
+        </Modal>
+
       </View>
     );
   }
@@ -241,7 +267,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#265073',
     padding: 10,
     marginTop: 30,
-    marginLeft: 85,
+    marginLeft: 55,
     borderRadius: 10,
     position: 'absolute',
     zIndex: 1,
@@ -259,8 +285,8 @@ const styles = StyleSheet.create({
     fontFamily: 'RobotoMono-Bold',
   },
   deviceIcon: {
-    width: 24,
-    height: 24,
+    width: 26,
+    height: 26,
     marginRight: 10,
   },
   deviceNameWrap: {
@@ -275,6 +301,10 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     zIndex: 2,
+  },
+  closeIcon: {
+    height: 30,
+    width: 30,
   },
   leftUpperImage: {
     position: 'absolute',
@@ -292,11 +322,28 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 60,
     borderWidth: 1,
+    paddingTop: 20,
   },
   scanButtonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
   },
 });

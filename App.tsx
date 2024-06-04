@@ -5,36 +5,35 @@ import StartUpPage from './components/StartUpPage';
 import TerminalPage from './components/TerminalPage';
 import BluetoothPage from './components/BluetoothPage';
 import LearningPage from './components/LearningPage';
-import ForwardPage from './components/LearningPageModules/ForwardPage';
-import BackwardPage from './components/LearningPageModules/BackwardPage';
-import LeftPage from './components/LearningPageModules/LeftPage';
-import RightPage from './components/LearningPageModules/RightPage';
-import LoopingPage from './components/LearningPageModules/LoopingPage';
-import ConditionalPage from './components/LearningPageModules/ConditionalPage';
-import ObstaclePage from './components/LearningPageModules/ObstaclePage';
-import Obstacle1Page from './components/LearningPageModules/Obstacle1Page';
-import ProgrammingPage from './components/LearningPageModules/ProgrammingPage';
-import SquarePage from './components/LearningPageModules/SquarePage';
+import Module1Topic1 from './components/LearningPageModules/Module1Topic1';
+import Module2Topic1 from './components/LearningPageModules/Module2Topic1';
 import A0Page from './components/LearningPageModules/A0Page';
 import A1Page from './components/LearningPageModules/A1Page';
 import A2Page from './components/LearningPageModules/A2Page';
 import A3Page from './components/LearningPageModules/A3Page';
 import A4Page from './components/LearningPageModules/A4Page';
 import A5Page from './components/LearningPageModules/A5Page';
-import IVDPage from './components/LearningPageModules/IVDPage';
-import Con0Page from './components/LearningPageModules/Con0Page';
-import Prog0Page from './components/LearningPageModules/Prog0Page';
-import Loop0Page from './components/LearningPageModules/Loop0Page';
-import Obs0Page from './components/LearningPageModules/Obs0Page';
-import Pol0Page from './components/LearningPageModules/Pol0Page';
-import Module4Page from './components/LearningPageModules/Module4Page';
+import Module1Topic0 from './components/LearningPageModules/Module1Topic0';
+import Module2Topic0 from './components/LearningPageModules/Module2Topic0';
+import Module0Topic0 from './components/LearningPageModules/Module0Topic0';
+import Module3Topic0 from './components/LearningPageModules/Module3Topic0';
+import Module4Topic0 from './components/LearningPageModules/Module4Topic0';
+import Module5Topic0 from './components/LearningPageModules/Module5Topic0';
+import SplashScreen from './components/SplashScreen'; // Import the SplashScreen component
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (  
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="StartUpPage">
+      <Stack.Navigator initialRouteName="SplashScreen">
+        {/* SplashScreen */}
+        <Stack.Screen
+          name="SplashScreen"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
+
         {/* Existing screens */}
         <Stack.Screen
           name="StartUpPage"
@@ -59,53 +58,13 @@ const App = () => {
 
         {/* New screens */}
         <Stack.Screen
-          name="ForwardPage"
-          component={ForwardPage}
+          name="Module1Topic1"
+          component={Module1Topic1}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="BackwardPage"
-          component={BackwardPage}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="LeftPage"
-          component={LeftPage}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="RightPage"
-          component={RightPage}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="LoopingPage"
-          component={LoopingPage}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ConditionalPage"
-          component={ConditionalPage}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ObstaclePage"
-          component={ObstaclePage}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Obstacle1Page"
-          component={Obstacle1Page}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ProgrammingPage"
-          component={ProgrammingPage}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="SquarePage"
-          component={SquarePage}
+          name="Module2Topic1"
+          component={Module2Topic1}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -139,38 +98,33 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="IVDPage"
-          component={IVDPage}
+          name="Module1Topic0"
+          component={Module1Topic0}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Con0Page"
-          component={Con0Page}
+          name="Module2Topic0"
+          component={Module2Topic0}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Prog0Page"
-          component={Prog0Page}
+          name="Module0Topic0"
+          component={Module0Topic0}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Loop0Page"
-          component={Loop0Page}
+          name="Module3Topic0"
+          component={Module3Topic0}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Obs0Page"
-          component={Obs0Page}
+          name="Module4Topic0"
+          component={Module4Topic0}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Pol0Page"
-          component={Pol0Page}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Module4Page"
-          component={Module4Page}
+          name="Module5Topic0"
+          component={Module5Topic0}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

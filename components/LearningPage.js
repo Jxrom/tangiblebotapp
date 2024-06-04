@@ -3,28 +3,19 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView } fr
 import { useNavigation } from '@react-navigation/native';
 
 // Importing Topic pages
-import ForwardPage from './LearningPageModules/ForwardPage';
-import BackwardPage from './LearningPageModules/BackwardPage';
-import LeftPage from './LearningPageModules/LeftPage';
-import RightPage from './LearningPageModules/RightPage';
-import LoopingPage from './LearningPageModules/LoopingPage';
-import ConditionalPage from './LearningPageModules/ConditionalPage';
-import ObstaclePage from './LearningPageModules/ObstaclePage'; 
-import Obstacle1Page from './LearningPageModules/Obstacle1Page'; 
-import Module4Page from './LearningPageModules/Module4Page'; 
-import SquarePage from './LearningPageModules/SquarePage'; 
+import ObstaclePage from './LearningPageModules/Module2Topic1'; 
 import A0Page from './LearningPageModules/A0Page';
 import A1Page from './LearningPageModules/A1Page';
 import A2Page from './LearningPageModules/A2Page';
 import A3Page from './LearningPageModules/A3Page';
 import A4Page from './LearningPageModules/A4Page';
 import A5Page from './LearningPageModules/A5Page';
-import IVDPage from './LearningPageModules/IVDPage';
-import Con0Page from './LearningPageModules/Con0Page';
-import Prog0Page from './LearningPageModules/Prog0Page';
-import Loop0Page from './LearningPageModules/Loop0Page';
-import Obs0Page from './LearningPageModules/Obs0Page';
-import Pol0Page from './LearningPageModules/Pol0Page';
+import Module1Topic0 from './LearningPageModules/Module1Topic0';
+import Module2Topic0 from './LearningPageModules/Module2Topic0';
+import Module0Topic0 from './LearningPageModules/Module0Topic0';
+import Module3Topic0 from './LearningPageModules/Module3Topic0';
+import Module4Topic0 from './LearningPageModules/Module4Topic0';
+import Module5Topic0 from './LearningPageModules/Module5Topic0';
 
 const LearningPage = () => {
   const navigation = useNavigation();
@@ -42,6 +33,7 @@ const LearningPage = () => {
   const [moduleExpanded3, setModuleExpanded3] = useState(false);
   const [moduleExpanded4, setModuleExpanded4] = useState(false);
   const [moduleExpanded5, setModuleExpanded5] = useState(false);
+  const [expandButtonIcon, setExpandButtonIcon] = useState(require('../assets/buttons/terminalPageButtons/unlockButton.png'));
 
   useEffect(() => {
     if (scrollViewRef.current) {
@@ -56,7 +48,7 @@ const LearningPage = () => {
 
   const handleModule1Click = () => {
     if (moduleCompleted0) {
-      navigation.navigate('IVDPage');
+      navigation.navigate('Module1Topic0');
     } else {
       Alert.alert('Module Locked', 'Please complete Module 0 first.');
     }
@@ -64,7 +56,7 @@ const LearningPage = () => {
 
   const handleModule2Click = () => {
     if (moduleCompleted1) {
-      navigation.navigate('Con0Page');
+      navigation.navigate('Module2Topic0');
     } else {
       Alert.alert('Module Locked', 'Please complete Module 1 first.');
     }
@@ -72,7 +64,7 @@ const LearningPage = () => {
 
   const handleModule3Click = () => {
     if (moduleCompleted2) {
-      navigation.navigate('Loop0Page');
+      navigation.navigate('Module3Topic0');
     } else {
       Alert.alert('Module Locked', 'Please complete Module 2 first.');
     }
@@ -80,7 +72,7 @@ const LearningPage = () => {
 
   const handleModule4Click = () => {
     if (moduleCompleted3) {
-      navigation.navigate('Obs0Page');
+      navigation.navigate('Module4Topic0');
     } else {
       Alert.alert('Module Locked', 'Please complete Module 3 first.');
     }
@@ -88,19 +80,30 @@ const LearningPage = () => {
 
   const handleModule5Click = () => {
     if (moduleCompleted4) {
-      navigation.navigate('Pol0Page');
+      navigation.navigate('Module5Topic0');
     } else {
       Alert.alert('Module Locked', 'Please complete Module 4 first.');
     }
   };
 
   const handleExpandAllModules = () => {
-    setModuleExpanded0(true);
-    setModuleExpanded1(true);
-    setModuleExpanded2(true);
-    setModuleExpanded3(true);
-    setModuleExpanded4(true);
-    setModuleExpanded5(true);
+    if (moduleExpanded0 || moduleExpanded1 || moduleExpanded2 || moduleExpanded3 || moduleExpanded4 || moduleExpanded5) {
+      setModuleExpanded0(false);
+      setModuleExpanded1(false);
+      setModuleExpanded2(false);
+      setModuleExpanded3(false);
+      setModuleExpanded4(false);
+      setModuleExpanded5(false);
+      setExpandButtonIcon(require('../assets/buttons/terminalPageButtons/lockButton.png'));
+    } else {
+      setModuleExpanded0(true);
+      setModuleExpanded1(true);
+      setModuleExpanded2(true);
+      setModuleExpanded3(true);
+      setModuleExpanded4(true);
+      setModuleExpanded5(true);
+      setExpandButtonIcon(require('../assets/buttons/terminalPageButtons/unlockButton.png'));
+    }
   };
 
   return (
@@ -114,24 +117,21 @@ const LearningPage = () => {
         </TouchableOpacity>
         <View style={styles.whiteBox}>
           <View style={[styles.boxContainer, { position: 'absolute', top: -30, zIndex: 1, left: '10%' }]}>
-            <Text style={styles.boxText}>Robot Program Modules</Text>
+            <Text style={styles.boxText}>Learning Modules</Text>
           </View>
           <ScrollView style={styles.innerScrollView}>
             <View style={styles.buttonContainer}>
               <TouchableOpacity 
                 style={styles.button} 
-                onPress={() => navigation.navigate('Prog0Page')}
+                onPress={() => navigation.navigate('Module0Topic0')}
                 disabled={moduleCompleted0}
               >
                 <Text style={styles.buttonText}>Module 0: What is Programming?</Text>
               </TouchableOpacity>
               {moduleExpanded0 && (
                 <View>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Prog0Page')}>
-                    <Text style={styles.subButtonText}>Topic 0: Importance of Programming</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('ProgrammingPage')}>
-                    <Text style={styles.subButtonText}>Topic 1: Introduction to Programming</Text>
+                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Module0Topic0')}>
+                    <Text style={styles.subButtonText}>Topic 0: Introduction to Programming</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('A0Page')}>
                     <Text style={styles.subButtonText}>Knowledge Assessment</Text>
@@ -147,20 +147,11 @@ const LearningPage = () => {
               </TouchableOpacity>
               {moduleExpanded1 && (
                 <View>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('IVDPage')}>
+                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Module1Topic0')}>
                     <Text style={styles.subButtonText}>Topic 0: Introduction to variable declaration</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('ForwardPage')}>
-                    <Text style={styles.subButtonText}>Topic 1: Make the Robot Go Forward!</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('BackwardPage')}>
-                    <Text style={styles.subButtonText}>Topic 2: Make the Robot Go Backward!</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('LeftPage')}>
-                    <Text style={styles.subButtonText}>Topic 3: Make the Robot Turn Left!</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('RightPage')}>
-                    <Text style={styles.subButtonText}>Topic 4: Make the Robot Turn Right!</Text>
+                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Module1Topic1')}>
+                    <Text style={styles.subButtonText}>Topic 1: Robot Cardinal Movement</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('A1Page')}>
                     <Text style={styles.subButtonText}>Knowledge Assessment</Text>
@@ -176,17 +167,11 @@ const LearningPage = () => {
               </TouchableOpacity>
               {moduleExpanded2 && (
                 <View>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Con0Page')}>
+                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Module2Topic0')}>
                     <Text style={styles.subButtonText}>Topic 0: What is Conditional Statement?</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('ConditionalPage')}>
-                    <Text style={styles.subButtonText}>Topic 1: Introduction to Conditional Statements</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('ObstaclePage')}>
-                    <Text style={styles.subButtonText}>Topic 2: Obstacle Detection part 1</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Obstacle1Page')}>
-                    <Text style={styles.subButtonText}>Topic 3: Obstacle Detection part 2</Text>
+                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Module2Topic1')}>
+                    <Text style={styles.subButtonText}>Topic 1: How to Use Conditional Statement</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('A2Page')}>
                     <Text style={styles.subButtonText}>Knowledge Assessment</Text>
@@ -202,11 +187,8 @@ const LearningPage = () => {
               </TouchableOpacity>
               {moduleExpanded3 && (
                 <View>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Loop0Page')}>
-                    <Text style={styles.subButtonText}>Topic 0: The usefullness of Looping</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('LoopingPage')}>
-                    <Text style={styles.subButtonText}>Topic 1: How to use Looping</Text>
+                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Module3Topic0')}>
+                    <Text style={styles.subButtonText}>Topic 0: Importance of Looping</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('A3Page')}>
                     <Text style={styles.subButtonText}>Knowledge Assessment</Text>
@@ -222,11 +204,8 @@ const LearningPage = () => {
               </TouchableOpacity>
               {moduleExpanded4 && (
                 <View>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Obs0Page')}>
+                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Module4Topic0')}>
                     <Text style={styles.subButtonText}>Topic 0: What is Obstacle Detection</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Module4Page')}>
-                    <Text style={styles.subButtonText}>Topic 1: Understanding Obstacle Detection</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('A4Page')}>
                     <Text style={styles.subButtonText}>Knowledge Assessment</Text>
@@ -242,25 +221,25 @@ const LearningPage = () => {
               </TouchableOpacity>
               {moduleExpanded5 && (
                 <View>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Pol0Page')}>
+                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Module5Topic0')}>
                     <Text style={styles.subButtonText}>Topic 0: Introduction of Polygons</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('SquarePage')}>
-                    <Text style={styles.subButtonText}>Topic 1: Making Square Polygon using Robot</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('A5Page')}>
                     <Text style={styles.subButtonText}>Knowledge Assessment</Text>
                   </TouchableOpacity>
                 </View>
               )}
-              <TouchableOpacity 
-                style={styles.expandButton} 
-                onPress={handleExpandAllModules}
-              >
-                <Text style={styles.expandButtonText}>Expand All Modules</Text>
-              </TouchableOpacity>
             </View>
           </ScrollView>
+          
+        </View>
+
+        <View>
+          <TouchableOpacity onPress={handleExpandAllModules}>
+            <Image
+              source={expandButtonIcon}
+              style={styles.expandButton}/>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
@@ -288,8 +267,8 @@ const styles = StyleSheet.create({
   boxText: {
     color: '#fff',
     textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontFamily: 'RobotoMono-Bold',
     textShadowColor: 'black',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
@@ -299,7 +278,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     width: 380,
-    height: 700,
+    height: 620,
     margin: 10,
     borderWidth: 1,
     position: 'relative',
@@ -311,30 +290,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#2D9596',
     padding: 10,
     marginVertical: 5,
-    borderRadius: 5,
-    borderWidth: 1,
+    borderRadius: 10,
+    elevation: 5,
   },
   buttonText: {
     color: '#fff',
     textAlign: 'left',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: 'RobotoMono-Bold',
     textShadowColor: 'black',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
   subButton: {
-    backgroundColor: '#4EA1D3',
+    backgroundColor: '#2d6096',
     padding: 10,
     marginVertical: 5,
     marginLeft: 20,
     borderRadius: 5,
-    borderWidth: 1,
   },
   subButtonText: {
     color: '#fff',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontFamily: 'RobotoMono-Bold',
   },
   closeButton: {
     position: 'absolute',
@@ -350,18 +328,19 @@ const styles = StyleSheet.create({
     height: 600, // Set the height to control scrolling
   },
   expandButton: {
-    backgroundColor: '#265073',
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 5,
-    borderWidth: 1,
+    height: 50,
+    width: 50,
   },
   expandButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'RobotoMono-Bold',
     textAlign: 'center',
   },
+  unlockButtonContainer: {
+    marginBottom: 1
+  },
+
 });
 
 export default LearningPage;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import the hook for navigation
 
 const A0Page = () => {
@@ -65,7 +65,7 @@ const A0Page = () => {
     // Check if the user can proceed to the next module
     if (score >= 3) {
       // Navigate to IVDPage
-      navigation.navigate('IVDPage'); // Replace 'IVDPage' with the name of your target screen in your navigation stack
+      navigation.navigate('Module1Topic0'); // Replace 'IVDPage' with the name of your target screen in your navigation stack
     } else {
       // Alert the user that they need to score 3 or higher to proceed
       Alert.alert(
@@ -79,8 +79,19 @@ const A0Page = () => {
   // Check if all questions are answered
   const allQuestionsAnswered = Object.keys(selectedOptions).length === questions.length;
 
+  const handleCloseButton = () => {
+    console.log('Close button pressed');
+    navigation.navigate('LearningPage');
+  };
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={handleCloseButton} style={styles.closeButton}>
+          <Image
+            source={require('../../assets/buttons/terminalPageButtons/close.png')}
+            style={styles.closeIcon}
+          />
+        </TouchableOpacity>
       <Text style={styles.title}>Module 0 - Knowledge Assessment</Text>
       <View style={styles.innerContainer}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -123,7 +134,7 @@ const A0Page = () => {
         <View style={styles.navigationButtonsContainer}>
           <TouchableOpacity
             style={[styles.navigationButton, styles.previousButton]}
-            onPress={() => navigation.navigate('ProgrammingPage')}
+            onPress={() => navigation.navigate('Module0Topic0')}
           >
             <Text style={styles.navigationButtonText}>Previous</Text>
           </TouchableOpacity>
@@ -145,7 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#98FB98',
+    backgroundColor: '#9AD0C2',
   },
   innerContainer: {
     backgroundColor: '#fff',
@@ -164,6 +175,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: '#000',
     marginTop: 30,
+    padding: 10,
+    borderBottomWidth: 2,
   },
   questionContainer: {
     marginBottom: 20,
@@ -193,7 +206,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2D9596',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -219,15 +232,25 @@ const styles = StyleSheet.create({
     width: '48%', // Adjust button width if needed
   },
   previousButton: {
-    backgroundColor: '#DDDDDD',
+    backgroundColor: '#2D9596',
   },
   proceedButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2D9596',
   },
   navigationButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  closeIcon: {
+    width: 30,
+    height: 30,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 2,
   },
 });
 
