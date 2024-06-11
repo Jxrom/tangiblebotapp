@@ -19,6 +19,7 @@ const TerminalPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [startEndProgramModalVisible, setStartEndProgramModalVisible] = useState(false);
+  const [startInvalidCardModalVisible, setInvalidCardModalVisible] = useState(false);
   const navigation = useNavigation();
   const scrollViewRef = useRef(null);
   const [selectedImageToRemove, setSelectedImageToRemove] = useState(null);
@@ -127,36 +128,36 @@ const TerminalPage = () => {
     '1359672946': { text: 'ObstacleAhead', image: require('../assets/instructions/obstacle_ahead.png')},
     '0374701737': { text: 'NoObstacleAhead', image: require('../assets/instructions/no_obstacle_ahead.png')},
     '1362825858': {
-      text: '360',
-      image: require('../assets/instructions/360.png'),
+      text: 'north',
+      image: require('../assets/instructions/north.png'),
     },
     '0622330115': {
-      text: '45',
-      image: require('../assets/instructions/45.png'),
+      text: 'northeast',
+      image: require('../assets/instructions/northeast.png'),
     },
     '1366603650': {
-      text: '90',
-      image: require('../assets/instructions/90.png'),
+      text: 'east',
+      image: require('../assets/instructions/east.png'),
     },
     '1364817282': {
-      text: '135',
-      image: require('../assets/instructions/135.png'),
+      text: 'southeast',
+      image: require('../assets/instructions/southeast.png'),
     },
     '0437137523': {
-      text: '180',
-      image: require('../assets/instructions/180.png'),
+      text: 'south',
+      image: require('../assets/instructions/south.png'),
     },
     '0436991283': {
-      text: '225',
-      image: require('../assets/instructions/225.png'),
+      text: 'southwest',
+      image: require('../assets/instructions/southwest.png'),
     },
     '0624927379': {
-      text: '270',
-      image: require('../assets/instructions/270.png'),
+      text: 'west',
+      image: require('../assets/instructions/west.png'),
     },
     '1367111794': {
-      text: '315',
-      image: require('../assets/instructions/315.png'),
+      text: 'northwest',
+      image: require('../assets/instructions/northwest.png'),
     },
   };
 
@@ -306,6 +307,9 @@ const TerminalPage = () => {
   const handleInputChange = (text) => {
     setTextInputValue(text);
 
+    console.log(numberTextMapping[text]);
+    
+
     if (numberTextMapping[text]) {
       setRfidInputs((prevInputs) => [...prevInputs, text]);
 
@@ -318,8 +322,9 @@ const TerminalPage = () => {
       }, 100);
     } else if (text.length === 10) {
       setTextInputValue('');
-    }
-
+      setInvalidCardModalVisible(true);
+    } 
+    
     // After adding a new image, scroll to the bottom
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollToEnd({ animated: true });
@@ -560,6 +565,11 @@ const closeStartEndProgramModal = () => {
   setStartEndProgramModalVisible(false);
 };
 
+ // New Modal for Invalid Card
+const closeInvalidCardModal = () => {
+  setInvalidCardModalVisible(false);
+};
+
 const handleCloseButton = () => {
   // Add your logic for the top-right button press
   console.log('Close button pressed');
@@ -796,6 +806,30 @@ return (
           </Text>
           <TouchableOpacity onPress={closeStartEndProgramModal} style={styles.modalButtonBox}>
             <Text style={styles.modalCloseButton}>Got it!</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+
+    {/* Invalid Card Alert Modal */}
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={startInvalidCardModalVisible}
+      onRequestClose={closeInvalidCardModal}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          {/* Add the Image component for your image */}
+          <Image
+            source={require('../assets/icons/red_warning.png')} // Update with your image path
+            style={styles.modalImage}
+          />
+          <Text style={styles.modalItemText}>
+            Invalid Card Detected. Please Tap a Code Card Only!
+          </Text>
+          <TouchableOpacity onPress={closeInvalidCardModal} style={styles.modalButtonBox}>
+            <Text style={styles.modalCloseButton}>Okay</Text>
           </TouchableOpacity>
         </View>
       </View>
